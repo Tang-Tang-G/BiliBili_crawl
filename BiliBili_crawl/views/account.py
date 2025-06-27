@@ -1,5 +1,4 @@
-from dbm import error
-
+from utils import db
 from flask import Blueprint, render_template, request
 
 ac = Blueprint('account', __name__)
@@ -9,13 +8,11 @@ def login():
     if request.method == 'GET':
         return render_template("login.html")
     #使用request。form。get获取数据,连接数据库，解析校验
-    import  pymysql
-    conn = pymysql.connect(host='localhost',port=3306,user='root',passwd='root',db='bilibili')
-    cursor = conn.cursor()
-    cursor.execute('select * from user where .....')
-    data = cursor.fetchall()#
-    cursor.close()
-    conn.close()
+    role = request.form.get('role')
+    mobile = request.form.get('mobile')
+    pwd = request.form.get('pwd')
+    print(role,mobile,pwd)
+    data = db.fetch_login("select * from bilbili where mobile =%s and pwd =%s",[mobile,pwd])
     if data:
         return "登录成功"
     return render_template( "login.html",error = "登录失败")#"登录失败
